@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -32,6 +33,13 @@ func (h *Handler) HandlerHealthcheck(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	fmt.Fprintln(w, string(json))
+}
+
+// HandlerPing handels /ping requests.
+func (h *Handler) HandlerPing(w http.ResponseWriter, r *http.Request) {
+	h.Db.Delete(&ServiceStatus{}, "Ip = ?", os.Getenv("APP_IP"))
+	h.Db.Create(&ServiceStatus{os.Getenv("APP_IP"), StatusAvailable, time.Now().String()})
+	w.WriteHeader(http.StatusOK)
 }
 
 func errorRequest(w http.ResponseWriter, err error) {

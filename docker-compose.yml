@@ -29,6 +29,7 @@ services:
     environment:
       APP_ID: "ID1"
       APP_IP: "app:7171"
+      APP_IP_SECOND: "app2:7171"
       DSN: "host=db port=5432 user=dany dbname=db password=123abc sslmode=disable"
     ports:
       - 7171:7171
@@ -41,6 +42,7 @@ services:
     environment:
       APP_ID: "ID2"
       APP_IP: "app2:7171"
+      APP_IP_SECOND: "app:7171"
       DSN: "host=db port=5432 user=dany dbname=db password=123abc sslmode=disable"
     ports:
       - 7172:7171

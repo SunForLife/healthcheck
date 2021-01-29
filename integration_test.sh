@@ -6,9 +6,9 @@ while true; do
 
     echo 'Requesting nginx'
 
-    code=$(curl --write-out '%{http_code}' --output /dev/stderr http://0.0.0.0:9292/healthcheck)
+    HTTP_CODE=$(curl --write-out '%{http_code}' --output /dev/stderr http://0.0.0.0:9292/healthcheck)
 
-    if [[ "$code" == "200" ]]; then
+    if [[ "$HTTP_CODE" == "200" ]]; then
 
         echo 'Got correct http status'
 
@@ -16,7 +16,7 @@ while true; do
 
     fi
 
-    sleep 5
+    sleep 10
 
 done
 

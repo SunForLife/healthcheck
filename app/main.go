@@ -13,6 +13,13 @@ import (
 	"gorm.io/gorm"
 )
 
+func pinger() {
+	for {
+		time.Sleep(10 * time.Second)
+		_, _ = http.Get(os.Getenv("APP_IP_SECOND") + "/ping")
+	}
+}
+
 func main() {
 	port := flag.Int("port", 7171, "port")
 	flag.Parse()
@@ -31,7 +38,7 @@ func main() {
 	db.AutoMigrate(&lib.ServiceStatus{})
 
 	db.Delete(&lib.ServiceStatus{}, "Ip = ?", os.Getenv("APP_IP"))
-	db.Create(&lib.ServiceStatus{os.Getenv("APP_IP"), lib.StatusAvailable})
+	db.Create(&lib.ServiceStatus{os.Getenv("APP_IP"), lib.StatusAvailable, time.Now().String()})
 	// for {
 	// 	var status lib.ServiceStatus
 	// 	if err := db.Where("Ip = ?", "kek").First(&status).Error; err != nil {
@@ -45,7 +52,8 @@ func main() {
 
 	// Http server initialization part.
 	http.HandleFunc("/healthcheck", handler.HandlerHealthcheck)
+	http.HandleFunc("/ping", handler.HandlerPing)
 
-	log.Printf("App started on port: %d\n", *port)
+	go log.Printf("App started on port: %d\n", *port)
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+strconv.Itoa(*port), nil))
 }
